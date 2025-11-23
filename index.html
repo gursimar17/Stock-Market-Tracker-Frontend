@@ -1,0 +1,2177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StockTracker Pro - Real-Time Stock Market Dashboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+:root {
+  /* Primitive Color Tokens */
+  --color-white: rgba(255, 255, 255, 1);
+  --color-black: rgba(0, 0, 0, 1);
+  --color-cream-50: rgba(252, 252, 249, 1);
+  --color-cream-100: rgba(255, 255, 253, 1);
+  --color-gray-200: rgba(245, 245, 245, 1);
+  --color-gray-300: rgba(167, 169, 169, 1);
+  --color-gray-400: rgba(119, 124, 124, 1);
+  --color-slate-500: rgba(98, 108, 113, 1);
+  --color-brown-600: rgba(94, 82, 64, 1);
+  --color-charcoal-700: rgba(31, 33, 33, 1);
+  --color-charcoal-800: rgba(38, 40, 40, 1);
+  --color-slate-900: rgba(19, 52, 59, 1);
+  --color-teal-300: rgba(50, 184, 198, 1);
+  --color-teal-400: rgba(45, 166, 178, 1);
+  --color-teal-500: rgba(33, 128, 141, 1);
+  --color-teal-600: rgba(29, 116, 128, 1);
+  --color-teal-700: rgba(26, 104, 115, 1);
+  --color-teal-800: rgba(41, 150, 161, 1);
+  --color-red-400: rgba(255, 84, 89, 1);
+  --color-red-500: rgba(192, 21, 47, 1);
+  --color-orange-400: rgba(230, 129, 97, 1);
+  --color-orange-500: rgba(168, 75, 47, 1);
+
+  /* RGB versions for opacity control */
+  --color-brown-600-rgb: 94, 82, 64;
+  --color-teal-500-rgb: 33, 128, 141;
+  --color-slate-900-rgb: 19, 52, 59;
+  --color-slate-500-rgb: 98, 108, 113;
+  --color-red-500-rgb: 192, 21, 47;
+  --color-red-400-rgb: 255, 84, 89;
+  --color-orange-500-rgb: 168, 75, 47;
+  --color-orange-400-rgb: 230, 129, 97;
+
+  /* Background color tokens (Light Mode) */
+  --color-bg-1: rgba(59, 130, 246, 0.08);
+  --color-bg-2: rgba(245, 158, 11, 0.08);
+  --color-bg-3: rgba(34, 197, 94, 0.08);
+  --color-bg-4: rgba(239, 68, 68, 0.08);
+  --color-bg-5: rgba(147, 51, 234, 0.08);
+  --color-bg-6: rgba(249, 115, 22, 0.08);
+  --color-bg-7: rgba(236, 72, 153, 0.08);
+  --color-bg-8: rgba(6, 182, 212, 0.08);
+
+  /* Semantic Color Tokens (Light Mode) */
+  --color-background: var(--color-cream-50);
+  --color-surface: var(--color-cream-100);
+  --color-text: var(--color-slate-900);
+  --color-text-secondary: var(--color-slate-500);
+  --color-primary: var(--color-teal-500);
+  --color-primary-hover: var(--color-teal-600);
+  --color-primary-active: var(--color-teal-700);
+  --color-secondary: rgba(var(--color-brown-600-rgb), 0.12);
+  --color-secondary-hover: rgba(var(--color-brown-600-rgb), 0.2);
+  --color-secondary-active: rgba(var(--color-brown-600-rgb), 0.25);
+  --color-border: rgba(var(--color-brown-600-rgb), 0.2);
+  --color-btn-primary-text: var(--color-cream-50);
+  --color-card-border: rgba(var(--color-brown-600-rgb), 0.12);
+  --color-card-border-inner: rgba(var(--color-brown-600-rgb), 0.12);
+  --color-error: var(--color-red-500);
+  --color-success: var(--color-teal-500);
+  --color-warning: var(--color-orange-500);
+  --color-info: var(--color-slate-500);
+  --color-focus-ring: rgba(var(--color-teal-500-rgb), 0.4);
+  --color-select-caret: rgba(var(--color-slate-900-rgb), 0.8);
+
+  /* Common style patterns */
+  --focus-ring: 0 0 0 3px var(--color-focus-ring);
+  --focus-outline: 2px solid var(--color-primary);
+  --status-bg-opacity: 0.15;
+  --status-border-opacity: 0.25;
+
+  /* RGB versions for opacity control */
+  --color-success-rgb: 33, 128, 141;
+  --color-error-rgb: 192, 21, 47;
+  --color-warning-rgb: 168, 75, 47;
+  --color-info-rgb: 98, 108, 113;
+
+  /* Typography */
+  --font-family-base: "FKGroteskNeue", "Geist", "Inter", -apple-system,
+    BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-family-mono: "Berkeley Mono", ui-monospace, SFMono-Regular, Menlo,
+    Monaco, Consolas, monospace;
+  --font-size-xs: 11px;
+  --font-size-sm: 12px;
+  --font-size-base: 14px;
+  --font-size-md: 14px;
+  --font-size-lg: 16px;
+  --font-size-xl: 18px;
+  --font-size-2xl: 20px;
+  --font-size-3xl: 24px;
+  --font-size-4xl: 30px;
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 550;
+  --font-weight-bold: 600;
+  --line-height-tight: 1.2;
+  --line-height-normal: 1.5;
+  --letter-spacing-tight: -0.01em;
+
+  /* Spacing */
+  --space-0: 0;
+  --space-1: 1px;
+  --space-2: 2px;
+  --space-4: 4px;
+  --space-6: 6px;
+  --space-8: 8px;
+  --space-10: 10px;
+  --space-12: 12px;
+  --space-16: 16px;
+  --space-20: 20px;
+  --space-24: 24px;
+  --space-32: 32px;
+
+  /* Border Radius */
+  --radius-sm: 6px;
+  --radius-base: 8px;
+  --radius-md: 10px;
+  --radius-lg: 12px;
+  --radius-full: 9999px;
+
+  /* Shadows */
+  --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.02);
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.02);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.04),
+    0 2px 4px -1px rgba(0, 0, 0, 0.02);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.04),
+    0 4px 6px -2px rgba(0, 0, 0, 0.02);
+  --shadow-inset-sm: inset 0 1px 0 rgba(255, 255, 255, 0.15),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.03);
+
+  /* Animation */
+  --duration-fast: 150ms;
+  --duration-normal: 250ms;
+  --ease-standard: cubic-bezier(0.16, 1, 0.3, 1);
+
+  /* Layout */
+  --container-sm: 640px;
+  --container-md: 768px;
+  --container-lg: 1024px;
+  --container-xl: 1280px;
+}
+
+/* Dark mode colors */
+@media (prefers-color-scheme: dark) {
+  :root {
+    /* RGB versions for opacity control (Dark Mode) */
+    --color-gray-400-rgb: 119, 124, 124;
+    --color-teal-300-rgb: 50, 184, 198;
+    --color-gray-300-rgb: 167, 169, 169;
+    --color-gray-200-rgb: 245, 245, 245;
+
+    /* Background color tokens (Dark Mode) */
+    --color-bg-1: rgba(29, 78, 216, 0.15);
+    --color-bg-2: rgba(180, 83, 9, 0.15);
+    --color-bg-3: rgba(21, 128, 61, 0.15);
+    --color-bg-4: rgba(185, 28, 28, 0.15);
+    --color-bg-5: rgba(107, 33, 168, 0.15);
+    --color-bg-6: rgba(194, 65, 12, 0.15);
+    --color-bg-7: rgba(190, 24, 93, 0.15);
+    --color-bg-8: rgba(8, 145, 178, 0.15);
+
+    /* Semantic Color Tokens (Dark Mode) */
+    --color-background: var(--color-charcoal-700);
+    --color-surface: var(--color-charcoal-800);
+    --color-text: var(--color-gray-200);
+    --color-text-secondary: rgba(var(--color-gray-300-rgb), 0.7);
+    --color-primary: var(--color-teal-300);
+    --color-primary-hover: var(--color-teal-400);
+    --color-primary-active: var(--color-teal-800);
+    --color-secondary: rgba(var(--color-gray-400-rgb), 0.15);
+    --color-secondary-hover: rgba(var(--color-gray-400-rgb), 0.25);
+    --color-secondary-active: rgba(var(--color-gray-400-rgb), 0.3);
+    --color-border: rgba(var(--color-gray-400-rgb), 0.3);
+    --color-error: var(--color-red-400);
+    --color-success: var(--color-teal-300);
+    --color-warning: var(--color-orange-400);
+    --color-info: var(--color-gray-300);
+    --color-focus-ring: rgba(var(--color-teal-300-rgb), 0.4);
+    --color-btn-primary-text: var(--color-slate-900);
+    --color-card-border: rgba(var(--color-gray-400-rgb), 0.2);
+    --color-card-border-inner: rgba(var(--color-gray-400-rgb), 0.15);
+    --shadow-inset-sm: inset 0 1px 0 rgba(255, 255, 255, 0.1),
+      inset 0 -1px 0 rgba(0, 0, 0, 0.15);
+    --color-border-secondary: rgba(var(--color-gray-400-rgb), 0.2);
+    --color-select-caret: rgba(var(--color-gray-200-rgb), 0.8);
+
+    /* RGB versions for dark mode */
+    --color-success-rgb: var(--color-teal-300-rgb);
+    --color-error-rgb: var(--color-red-400-rgb);
+    --color-warning-rgb: var(--color-orange-400-rgb);
+    --color-info-rgb: var(--color-gray-300-rgb);
+  }
+}
+
+/* Data attribute for manual theme switching */
+[data-color-scheme="dark"] {
+  /* RGB versions for opacity control (dark mode) */
+  --color-gray-400-rgb: 119, 124, 124;
+  --color-teal-300-rgb: 50, 184, 198;
+  --color-gray-300-rgb: 167, 169, 169;
+  --color-gray-200-rgb: 245, 245, 245;
+
+  /* Colorful background palette - Dark Mode */
+  --color-bg-1: rgba(29, 78, 216, 0.15);
+  --color-bg-2: rgba(180, 83, 9, 0.15);
+  --color-bg-3: rgba(21, 128, 61, 0.15);
+  --color-bg-4: rgba(185, 28, 28, 0.15);
+  --color-bg-5: rgba(107, 33, 168, 0.15);
+  --color-bg-6: rgba(194, 65, 12, 0.15);
+  --color-bg-7: rgba(190, 24, 93, 0.15);
+  --color-bg-8: rgba(8, 145, 178, 0.15);
+
+  /* Semantic Color Tokens (Dark Mode) */
+  --color-background: var(--color-charcoal-700);
+  --color-surface: var(--color-charcoal-800);
+  --color-text: var(--color-gray-200);
+  --color-text-secondary: rgba(var(--color-gray-300-rgb), 0.7);
+  --color-primary: var(--color-teal-300);
+  --color-primary-hover: var(--color-teal-400);
+  --color-primary-active: var(--color-teal-800);
+  --color-secondary: rgba(var(--color-gray-400-rgb), 0.15);
+  --color-secondary-hover: rgba(var(--color-gray-400-rgb), 0.25);
+  --color-secondary-active: rgba(var(--color-gray-400-rgb), 0.3);
+  --color-border: rgba(var(--color-gray-400-rgb), 0.3);
+  --color-error: var(--color-red-400);
+  --color-success: var(--color-teal-300);
+  --color-warning: var(--color-orange-400);
+  --color-info: var(--color-gray-300);
+  --color-focus-ring: rgba(var(--color-teal-300-rgb), 0.4);
+  --color-btn-primary-text: var(--color-slate-900);
+  --color-card-border: rgba(var(--color-gray-400-rgb), 0.15);
+  --color-card-border-inner: rgba(var(--color-gray-400-rgb), 0.15);
+  --shadow-inset-sm: inset 0 1px 0 rgba(255, 255, 255, 0.1),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.15);
+  --color-border-secondary: rgba(var(--color-gray-400-rgb), 0.2);
+  --color-select-caret: rgba(var(--color-gray-200-rgb), 0.8);
+
+  /* RGB versions for dark mode */
+  --color-success-rgb: var(--color-teal-300-rgb);
+  --color-error-rgb: var(--color-red-400-rgb);
+  --color-warning-rgb: var(--color-orange-400-rgb);
+  --color-info-rgb: var(--color-gray-300-rgb);
+}
+
+[data-color-scheme="light"] {
+  /* RGB versions for opacity control (light mode) */
+  --color-brown-600-rgb: 94, 82, 64;
+  --color-teal-500-rgb: 33, 128, 141;
+  --color-slate-900-rgb: 19, 52, 59;
+
+  /* Semantic Color Tokens (Light Mode) */
+  --color-background: var(--color-cream-50);
+  --color-surface: var(--color-cream-100);
+  --color-text: var(--color-slate-900);
+  --color-text-secondary: var(--color-slate-500);
+  --color-primary: var(--color-teal-500);
+  --color-primary-hover: var(--color-teal-600);
+  --color-primary-active: var(--color-teal-700);
+  --color-secondary: rgba(var(--color-brown-600-rgb), 0.12);
+  --color-secondary-hover: rgba(var(--color-brown-600-rgb), 0.2);
+  --color-secondary-active: rgba(var(--color-brown-600-rgb), 0.25);
+  --color-border: rgba(var(--color-brown-600-rgb), 0.2);
+  --color-btn-primary-text: var(--color-cream-50);
+  --color-card-border: rgba(var(--color-brown-600-rgb), 0.12);
+  --color-card-border-inner: rgba(var(--color-brown-600-rgb), 0.12);
+  --color-error: var(--color-red-500);
+  --color-success: var(--color-teal-500);
+  --color-warning: var(--color-orange-500);
+  --color-info: var(--color-slate-500);
+  --color-focus-ring: rgba(var(--color-teal-500-rgb), 0.4);
+
+  /* RGB versions for light mode */
+  --color-success-rgb: var(--color-teal-500-rgb);
+  --color-error-rgb: var(--color-red-500-rgb);
+  --color-warning-rgb: var(--color-orange-500-rgb);
+  --color-info-rgb: var(--color-slate-500-rgb);
+}
+
+/* Base styles */
+html {
+  font-size: var(--font-size-base);
+  font-family: var(--font-family-base);
+  line-height: var(--line-height-normal);
+  color: var(--color-text);
+  background-color: var(--color-background);
+  -webkit-font-smoothing: antialiased;
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: inherit;
+}
+
+/* Typography */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  margin: 0;
+  font-weight: var(--font-weight-semibold);
+  line-height: var(--line-height-tight);
+  color: var(--color-text);
+  letter-spacing: var(--letter-spacing-tight);
+}
+
+h1 {
+  font-size: var(--font-size-4xl);
+}
+h2 {
+  font-size: var(--font-size-3xl);
+}
+h3 {
+  font-size: var(--font-size-2xl);
+}
+h4 {
+  font-size: var(--font-size-xl);
+}
+h5 {
+  font-size: var(--font-size-lg);
+}
+h6 {
+  font-size: var(--font-size-md);
+}
+
+p {
+  margin: 0 0 var(--space-16) 0;
+}
+
+a {
+  color: var(--color-primary);
+  text-decoration: none;
+  transition: color var(--duration-fast) var(--ease-standard);
+}
+
+a:hover {
+  color: var(--color-primary-hover);
+}
+
+/* Buttons */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-8) var(--space-16);
+  border-radius: var(--radius-base);
+  font-size: var(--font-size-base);
+  font-weight: 500;
+  line-height: 1.5;
+  cursor: pointer;
+  transition: all var(--duration-normal) var(--ease-standard);
+  border: none;
+  text-decoration: none;
+  position: relative;
+}
+
+.btn:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}
+
+.btn--primary {
+  background: var(--color-primary);
+  color: var(--color-btn-primary-text);
+}
+
+.btn--primary:hover {
+  background: var(--color-primary-hover);
+}
+
+.btn--primary:active {
+  background: var(--color-primary-active);
+}
+
+.btn--secondary {
+  background: var(--color-secondary);
+  color: var(--color-text);
+}
+
+.btn--secondary:hover {
+  background: var(--color-secondary-hover);
+}
+
+.btn--secondary:active {
+  background: var(--color-secondary-active);
+}
+
+.btn--outline {
+  background: transparent;
+  border: 1px solid var(--color-border);
+  color: var(--color-text);
+}
+
+.btn--outline:hover {
+  background: var(--color-secondary);
+}
+
+.btn--sm {
+  padding: var(--space-4) var(--space-12);
+  font-size: var(--font-size-sm);
+  border-radius: var(--radius-sm);
+}
+
+.btn--lg {
+  padding: var(--space-10) var(--space-20);
+  font-size: var(--font-size-lg);
+  border-radius: var(--radius-md);
+}
+
+.btn--full-width {
+  width: 100%;
+}
+
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Form elements */
+.form-control {
+  display: block;
+  width: 100%;
+  padding: var(--space-8) var(--space-12);
+  font-size: var(--font-size-md);
+  line-height: 1.5;
+  color: var(--color-text);
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-base);
+  transition: border-color var(--duration-fast) var(--ease-standard),
+    box-shadow var(--duration-fast) var(--ease-standard);
+}
+
+.form-control:focus {
+  border-color: var(--color-primary);
+  outline: var(--focus-outline);
+}
+
+.form-label {
+  display: block;
+  margin-bottom: var(--space-8);
+  font-weight: var(--font-weight-medium);
+  font-size: var(--font-size-sm);
+}
+
+.form-group {
+  margin-bottom: var(--space-16);
+}
+
+/* Card component */
+.card {
+  background-color: var(--color-surface);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-card-border);
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+  transition: box-shadow var(--duration-normal) var(--ease-standard);
+}
+
+.card:hover {
+  box-shadow: var(--shadow-md);
+}
+
+.card__body {
+  padding: var(--space-16);
+}
+
+.card__header,
+.card__footer {
+  padding: var(--space-16);
+  border-bottom: 1px solid var(--color-card-border-inner);
+}
+
+/* Utility classes */
+.flex {
+  display: flex;
+}
+.flex-col {
+  flex-direction: column;
+}
+.items-center {
+  align-items: center;
+}
+.justify-center {
+  justify-content: center;
+}
+.justify-between {
+  justify-content: space-between;
+}
+.gap-4 {
+  gap: var(--space-4);
+}
+.gap-8 {
+  gap: var(--space-8);
+}
+.gap-16 {
+  gap: var(--space-16);
+}
+
+.hidden {
+  display: none !important;
+}
+
+/* Custom Stock Market Styles */
+.navbar {
+  background: var(--color-surface);
+  border-bottom: 1px solid var(--color-card-border);
+  padding: var(--space-16) 0;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: var(--shadow-sm);
+}
+
+.navbar .container {
+  max-width: var(--container-xl);
+  margin: 0 auto;
+  padding: 0 var(--space-16);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.navbar-brand {
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-primary);
+  text-decoration: none;
+}
+
+.navbar-nav {
+  display: flex;
+  align-items: center;
+  gap: var(--space-24);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.navbar-nav a {
+  color: var(--color-text);
+  font-weight: var(--font-weight-medium);
+  padding: var(--space-8) var(--space-12);
+  border-radius: var(--radius-base);
+  transition: all var(--duration-fast);
+}
+
+.navbar-nav a:hover,
+.navbar-nav a.active {
+  background: var(--color-bg-1);
+  color: var(--color-primary);
+}
+
+.search-container {
+  position: relative;
+  width: 300px;
+}
+
+.search-input {
+  width: 100%;
+  padding: var(--space-8) var(--space-12) var(--space-8) var(--space-32);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-base);
+  font-size: var(--font-size-base);
+  background: var(--color-surface);
+}
+
+.search-icon {
+  position: absolute;
+  left: var(--space-8);
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--color-text-secondary);
+  width: 16px;
+  height: 16px;
+}
+
+.search-results {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-base);
+  box-shadow: var(--shadow-lg);
+  z-index: 200;
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.search-result {
+  padding: var(--space-12);
+  cursor: pointer;
+  border-bottom: 1px solid var(--color-card-border);
+}
+
+.search-result:hover {
+  background: var(--color-bg-1);
+}
+
+.search-result:last-child {
+  border-bottom: none;
+}
+
+.navbar-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-16);
+}
+
+.theme-toggle {
+  padding: var(--space-8);
+  border-radius: var(--radius-base);
+  background: var(--color-secondary);
+  border: none;
+  cursor: pointer;
+  color: var(--color-text);
+}
+
+.user-menu {
+  position: relative;
+}
+
+.user-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-full);
+  background: var(--color-primary);
+  color: var(--color-btn-primary-text);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: var(--font-weight-bold);
+  cursor: pointer;
+}
+
+.main-content {
+  max-width: var(--container-xl);
+  margin: 0 auto;
+  padding: var(--space-24) var(--space-16);
+}
+
+.section {
+  margin-bottom: var(--space-32);
+}
+
+.section-header {
+  margin-bottom: var(--space-24);
+}
+
+.section-title {
+  font-size: var(--font-size-2xl);
+  font-weight: var(--font-weight-bold);
+  margin-bottom: var(--space-8);
+}
+
+.section-subtitle {
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-base);
+}
+
+.indices-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: var(--space-16);
+}
+
+.index-card {
+  background: var(--color-surface);
+  padding: var(--space-20);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-card-border);
+  box-shadow: var(--shadow-sm);
+  transition: all var(--duration-normal);
+}
+
+.index-card:hover {
+  box-shadow: var(--shadow-md);
+}
+
+.index-name {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+  margin-bottom: var(--space-4);
+}
+
+.index-value {
+  font-size: var(--font-size-2xl);
+  font-weight: var(--font-weight-bold);
+  margin-bottom: var(--space-8);
+}
+
+.index-change {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+}
+
+.index-change.positive {
+  color: var(--color-success);
+}
+
+.index-change.negative {
+  color: var(--color-error);
+}
+
+.trending-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: var(--space-16);
+}
+
+.trending-card {
+  background: var(--color-surface);
+  padding: var(--space-20);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-card-border);
+  box-shadow: var(--shadow-sm);
+}
+
+.trending-title {
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-semibold);
+  margin-bottom: var(--space-16);
+}
+
+.stock-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-12);
+}
+
+.stock-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--space-12);
+  border-radius: var(--radius-base);
+  cursor: pointer;
+  transition: background var(--duration-fast);
+}
+
+.stock-item:hover {
+  background: var(--color-bg-1);
+}
+
+.stock-info {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.stock-symbol {
+  font-weight: var(--font-weight-semibold);
+  font-size: var(--font-size-base);
+}
+
+.stock-name {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+}
+
+.stock-price {
+  text-align: right;
+}
+
+.stock-current {
+  font-weight: var(--font-weight-semibold);
+  margin-bottom: var(--space-2);
+}
+
+.stock-change {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+}
+
+.stock-change.positive {
+  color: var(--color-success);
+}
+
+.stock-change.negative {
+  color: var(--color-error);
+}
+
+.featured-stocks {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+  gap: var(--space-16);
+}
+
+.featured-stock {
+  background: var(--color-surface);
+  padding: var(--space-20);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-card-border);
+  box-shadow: var(--shadow-sm);
+}
+
+.featured-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: var(--space-16);
+}
+
+.featured-info h3 {
+  margin-bottom: var(--space-4);
+}
+
+.featured-symbol {
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-sm);
+}
+
+.featured-price {
+  text-align: right;
+}
+
+.featured-current {
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-bold);
+  margin-bottom: var(--space-4);
+}
+
+.chart-container {
+  height: 200px;
+  margin-top: var(--space-16);
+}
+
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background: var(--color-surface);
+  border-radius: var(--radius-lg);
+  max-width: 500px;
+  width: 90%;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: var(--shadow-lg);
+}
+
+.modal-header {
+  padding: var(--space-20);
+  border-bottom: 1px solid var(--color-card-border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.modal-title {
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-semibold);
+}
+
+.modal-close {
+  background: none;
+  border: none;
+  font-size: var(--font-size-xl);
+  cursor: pointer;
+  color: var(--color-text-secondary);
+  padding: var(--space-4);
+}
+
+.modal-close:hover {
+  color: var(--color-text);
+}
+
+.modal-body {
+  padding: var(--space-20);
+}
+
+.modal-footer {
+  padding: var(--space-20);
+  border-top: 1px solid var(--color-card-border);
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-12);
+}
+
+/* Stock Detail Page */
+.stock-detail {
+  max-width: var(--container-xl);
+  margin: 0 auto;
+  padding: var(--space-24) var(--space-16);
+}
+
+.stock-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: var(--space-32);
+  padding-bottom: var(--space-24);
+  border-bottom: 1px solid var(--color-card-border);
+}
+
+.stock-title {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
+}
+
+.stock-company {
+  font-size: var(--font-size-3xl);
+  font-weight: var(--font-weight-bold);
+}
+
+.stock-symbol-large {
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-lg);
+}
+
+.stock-price-large {
+  font-size: var(--font-size-4xl);
+  font-weight: var(--font-weight-bold);
+  margin-bottom: var(--space-8);
+}
+
+.stock-actions {
+  display: flex;
+  gap: var(--space-12);
+  align-items: center;
+}
+
+.stock-content {
+  display: grid;
+  grid-template-columns: 1fr 350px;
+  gap: var(--space-32);
+  margin-bottom: var(--space-32);
+}
+
+.chart-section {
+  background: var(--color-surface);
+  padding: var(--space-24);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-card-border);
+  box-shadow: var(--shadow-sm);
+}
+
+.chart-controls {
+  display: flex;
+  gap: var(--space-8);
+  margin-bottom: var(--space-24);
+}
+
+.time-button {
+  padding: var(--space-6) var(--space-12);
+  border: 1px solid var(--color-border);
+  background: transparent;
+  border-radius: var(--radius-base);
+  cursor: pointer;
+  font-size: var(--font-size-sm);
+  transition: all var(--duration-fast);
+}
+
+.time-button.active,
+.time-button:hover {
+  background: var(--color-primary);
+  color: var(--color-btn-primary-text);
+  border-color: var(--color-primary);
+}
+
+.main-chart {
+  height: 400px;
+}
+
+.stock-sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-24);
+}
+
+.stats-card {
+  background: var(--color-surface);
+  padding: var(--space-20);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-card-border);
+  box-shadow: var(--shadow-sm);
+}
+
+.stats-title {
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-semibold);
+  margin-bottom: var(--space-16);
+}
+
+.stats-grid {
+  display: grid;
+  gap: var(--space-12);
+}
+
+.stat-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: var(--space-8);
+  border-bottom: 1px solid var(--color-card-border-inner);
+}
+
+.stat-item:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.stat-label {
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-sm);
+}
+
+.stat-value {
+  font-weight: var(--font-weight-medium);
+  font-size: var(--font-size-sm);
+}
+
+/* Hamburger button - hidden on desktop */
+.hamburger-btn {
+  display: none;
+  background: none;
+  border: none;
+  color: var(--color-text);
+  font-size: 24px;
+  cursor: pointer;
+  padding: var(--space-8);
+  line-height: 1;
+  min-width: 44px;
+  min-height: 44px;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-base);
+  transition: background var(--duration-fast);
+}
+
+.hamburger-btn:hover {
+  background: var(--color-secondary);
+}
+
+.hamburger-btn:focus-visible {
+  outline: var(--focus-outline);
+}
+
+/* Mobile menu - hidden by default */
+.mobile-menu {
+  position: fixed;
+  top: 65px;
+  left: 0;
+  right: 0;
+  background: var(--color-surface);
+  padding: var(--space-16);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  box-shadow: var(--shadow-lg);
+  border-bottom: 1px solid var(--color-card-border);
+  transform: translateY(-100%);
+  opacity: 0;
+  transition: transform var(--duration-normal) var(--ease-standard), opacity var(--duration-normal) var(--ease-standard);
+  z-index: 999;
+  max-height: calc(100vh - 65px);
+  overflow-y: auto;
+}
+
+.mobile-menu.open {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+.mobile-nav-link {
+  color: var(--color-text);
+  text-decoration: none;
+  padding: var(--space-12) var(--space-16);
+  border-radius: var(--radius-base);
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-medium);
+  transition: background var(--duration-fast);
+  display: block;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+}
+
+.mobile-nav-link:hover,
+.mobile-nav-link.active {
+  background: var(--color-bg-1);
+  color: var(--color-primary);
+}
+
+.mobile-search-container {
+  position: relative;
+  margin-bottom: var(--space-12);
+  padding-bottom: var(--space-12);
+  border-bottom: 1px solid var(--color-card-border);
+}
+
+.mobile-search-container .search-icon {
+  position: absolute;
+  left: var(--space-12);
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--color-text-secondary);
+  width: 16px;
+  height: 16px;
+  pointer-events: none;
+}
+
+.mobile-search-input {
+  width: 100%;
+  padding: var(--space-10) var(--space-12) var(--space-10) var(--space-36);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-base);
+  font-size: var(--font-size-base);
+  background: var(--color-background);
+  color: var(--color-text);
+}
+
+#mobile-search-results {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  right: 0;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-base);
+  box-shadow: var(--shadow-lg);
+  z-index: 1000;
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .navbar .container {
+    position: relative;
+  }
+  
+  /* Show hamburger button */
+  .hamburger-btn {
+    display: flex;
+    order: -1;
+  }
+  
+  /* Hide desktop nav */
+  .desktop-nav {
+    display: none;
+  }
+  
+  /* Hide desktop search */
+  .desktop-search {
+    display: none;
+  }
+  
+  .indices-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .trending-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .featured-stocks {
+    grid-template-columns: 1fr;
+  }
+  
+  .stock-content {
+    grid-template-columns: 1fr;
+  }
+  
+  .stock-header {
+    flex-direction: column;
+    gap: var(--space-16);
+    align-items: flex-start;
+  }
+  
+  .navbar-brand {
+    flex: 1;
+    text-align: center;
+  }
+  
+  .navbar-actions {
+    gap: var(--space-8);
+  }
+  
+  #user-welcome {
+    display: none !important;
+  }
+}
+
+/* Tablet responsive */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .navbar-nav {
+    gap: var(--space-12);
+  }
+  
+  .navbar-nav a {
+    padding: var(--space-6) var(--space-10);
+    font-size: var(--font-size-sm);
+  }
+  
+  .search-container {
+    width: 200px;
+  }
+}
+
+/* Hide mobile menu on desktop */
+@media (min-width: 769px) {
+  .mobile-menu {
+    display: none !important;
+  }
+  
+  .hamburger-btn {
+    display: none !important;
+  }
+}
+
+@font-face {
+  font-family: 'FKGroteskNeue';
+  src: url('https://r2cdn.perplexity.ai/fonts/FKGroteskNeue.woff2')
+    format('woff2');
+}
+
+.live-indicator {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-4);
+  font-size: var(--font-size-xs);
+  color: var(--color-success);
+  font-weight: var(--font-weight-medium);
+}
+
+.live-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--color-success);
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+.price-flash {
+  animation: flash 0.5s ease-in-out;
+}
+
+.price-flash.positive {
+  animation: flashGreen 0.5s ease-in-out;
+}
+
+.price-flash.negative {
+  animation: flashRed 0.5s ease-in-out;
+}
+
+@keyframes flashGreen {
+  0% { background-color: transparent; }
+  50% { background-color: rgba(var(--color-success-rgb), 0.2); }
+  100% { background-color: transparent; }
+}
+
+@keyframes flashRed {
+  0% { background-color: transparent; }
+  50% { background-color: rgba(var(--color-error-rgb), 0.2); }
+  100% { background-color: transparent; }
+}
+
+.toast {
+  position: fixed;
+  top: var(--space-20);
+  right: var(--space-20);
+  background: var(--color-surface);
+  border: 1px solid var(--color-card-border);
+  border-radius: var(--radius-base);
+  padding: var(--space-16);
+  box-shadow: var(--shadow-lg);
+  z-index: 1001;
+  min-width: 300px;
+  opacity: 0;
+  transform: translateX(100%);
+  transition: all var(--duration-normal);
+}
+
+.toast.show {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.toast.success {
+  border-left: 4px solid var(--color-success);
+}
+
+.toast.error {
+  border-left: 4px solid var(--color-error);
+}
+
+.toast-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.toast-message {
+  flex: 1;
+  margin-right: var(--space-12);
+}
+
+.toast-close {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--color-text-secondary);
+  padding: var(--space-2);
+}
+
+.heart-button {
+  background: none;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-base);
+  padding: var(--space-8) var(--space-12);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  transition: all var(--duration-fast);
+  color: var(--color-text);
+}
+
+.heart-button:hover {
+  border-color: var(--color-error);
+  color: var(--color-error);
+}
+
+.heart-button.active {
+  background: var(--color-error);
+  border-color: var(--color-error);
+  color: white;
+}
+
+.heart-icon {
+  width: 16px;
+  height: 16px;
+  fill: currentColor;
+}
+
+/* Authentication styles */
+.requirement {
+  font-size: var(--font-size-xs);
+  margin: 2px 0;
+  transition: color var(--duration-fast);
+}
+
+.requirement.valid {
+  color: var(--color-success);
+}
+
+.requirement.invalid {
+  color: var(--color-error);
+}
+
+/* Stock selection dropdown */
+.stock-option {
+  padding: 12px;
+  cursor: pointer;
+  border-bottom: 1px solid var(--color-card-border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: background-color var(--duration-fast);
+}
+
+.stock-option:hover {
+  background-color: var(--color-bg-1);
+}
+
+.stock-option:last-child {
+  border-bottom: none;
+}
+
+.stock-option-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.stock-option-symbol {
+  font-weight: var(--font-weight-semibold);
+  font-size: var(--font-size-sm);
+}
+
+.stock-option-name {
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-xs);
+}
+
+.stock-option-price {
+  font-weight: var(--font-weight-medium);
+  color: var(--color-primary);
+  font-size: var(--font-size-sm);
+}
+
+/* Authentication error states */
+.form-control.error {
+  border-color: var(--color-error);
+}
+
+.form-control.error:focus {
+  border-color: var(--color-error);
+  box-shadow: 0 0 0 3px rgba(var(--color-error-rgb), 0.1);
+}
+
+/* Locked field styling */
+.form-control:disabled,
+.form-control[readonly] {
+  background-color: var(--color-gray-200) !important;
+  color: var(--color-text-secondary) !important;
+  cursor: not-allowed !important;
+  opacity: 0.8 !important;
+  font-weight: var(--font-weight-medium) !important;
+  border-color: rgba(var(--color-brown-600-rgb), 0.15) !important;
+}
+
+@media (prefers-color-scheme: dark) {
+  .form-control:disabled,
+  .form-control[readonly] {
+    background-color: var(--color-charcoal-800) !important;
+    border-color: rgba(var(--color-gray-400-rgb), 0.2) !important;
+  }
+}
+
+[data-color-scheme="dark"] .form-control:disabled,
+[data-color-scheme="dark"] .form-control[readonly] {
+  background-color: var(--color-charcoal-800) !important;
+  border-color: rgba(var(--color-gray-400-rgb), 0.2) !important;
+}
+
+[data-color-scheme="light"] .form-control:disabled,
+[data-color-scheme="light"] .form-control[readonly] {
+  background-color: var(--color-gray-200) !important;
+  border-color: rgba(var(--color-brown-600-rgb), 0.15) !important;
+}
+
+/* Locked field container styling */
+.locked-field {
+  position: relative;
+}
+
+.locked-field::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: repeating-linear-gradient(
+    45deg,
+    transparent,
+    transparent 2px,
+    rgba(var(--color-text-secondary-rgb, 98, 108, 113), 0.05) 2px,
+    rgba(var(--color-text-secondary-rgb, 98, 108, 113), 0.05) 4px
+  );
+  pointer-events: none;
+  border-radius: var(--radius-base);
+}
+    </style>
+</head>
+<body>
+    <!-- Login Modal -->
+    <div id="login-modal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Login to StockTracker Pro</h2>
+                <button class="modal-close" id="login-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div id="login-error" class="hidden" style="padding: 12px; margin-bottom: 16px; background: rgba(var(--color-error-rgb), 0.1); border: 1px solid rgba(var(--color-error-rgb), 0.3); border-radius: var(--radius-base); color: var(--color-error); font-size: var(--font-size-sm);"></div>
+                <form id="login-form">
+                    <div class="form-group">
+                        <label class="form-label">Username or Email *</label>
+                        <input type="text" id="login-username" class="form-control" placeholder="Enter username or email" required>
+                        <small style="color: var(--color-text-secondary); font-size: var(--font-size-xs);">* Required field</small>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Password *</label>
+                        <div style="position: relative;">
+                            <input type="password" id="login-password" class="form-control" placeholder="Enter password" required>
+                            <button type="button" id="login-password-toggle" style="position: absolute; right: 8px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; color: var(--color-text-secondary); padding: 4px;">👁️</button>
+                        </div>
+                        <small style="color: var(--color-text-secondary); font-size: var(--font-size-xs);">* Required field</small>
+                    </div>
+                    <button type="submit" class="btn btn--primary btn--full-width">Login</button>
+                </form>
+                <div style="text-align: center; margin-top: 20px;">
+                    <p style="color: var(--color-text-secondary); font-size: var(--font-size-sm); margin-bottom: 8px;">Don't have an account?</p>
+                    <button type="button" id="show-register" class="btn btn--outline">Create Account</button>
+                </div>
+                <div style="margin-top: 16px; padding: 12px; background: var(--color-bg-1); border-radius: var(--radius-base); font-size: var(--font-size-sm); color: var(--color-text-secondary);">
+                    <strong>Test Accounts:</strong><br>
+                    • Username: <strong>demo_user</strong>, Password: <strong>Demo@123</strong><br>
+                    • Username: <strong>investor</strong>, Password: <strong>Invest@456</strong><br>
+                    <em>Or create your own account!</em>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Register Modal -->
+    <div id="register-modal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Create Account</h2>
+                <button class="modal-close" id="register-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div id="register-error" class="hidden" style="padding: 12px; margin-bottom: 16px; background: rgba(var(--color-error-rgb), 0.1); border: 1px solid rgba(var(--color-error-rgb), 0.3); border-radius: var(--radius-base); color: var(--color-error); font-size: var(--font-size-sm);"></div>
+                <div id="register-success" class="hidden" style="padding: 12px; margin-bottom: 16px; background: rgba(var(--color-success-rgb), 0.1); border: 1px solid rgba(var(--color-success-rgb), 0.3); border-radius: var(--radius-base); color: var(--color-success); font-size: var(--font-size-sm);"></div>
+                <form id="register-form">
+                    <div class="form-group">
+                        <label class="form-label">Username *</label>
+                        <input type="text" id="register-username" class="form-control" placeholder="Enter username (min 3 characters)" required minlength="3" pattern="[a-zA-Z0-9]+">
+                        <small style="color: var(--color-text-secondary); font-size: var(--font-size-xs);">* Required: Must be at least 3 characters, alphanumeric only</small>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Email *</label>
+                        <input type="email" id="register-email" class="form-control" placeholder="Enter email address" required>
+                        <small style="color: var(--color-text-secondary); font-size: var(--font-size-xs);">* Required: Valid email format</small>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Password *</label>
+                        <div style="position: relative;">
+                            <input type="password" id="register-password" class="form-control" placeholder="Enter password" required minlength="8">
+                            <button type="button" id="register-password-toggle" style="position: absolute; right: 8px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; color: var(--color-text-secondary); padding: 4px;">👁️</button>
+                        </div>
+                        <div id="password-requirements" style="margin-top: 8px; font-size: var(--font-size-xs); padding: 12px; background: var(--color-bg-1); border-radius: var(--radius-base); border: 1px solid var(--color-border);">
+                            <div style="font-weight: var(--font-weight-medium); margin-bottom: 8px; color: var(--color-text);">Password Requirements:</div>
+                            <div id="req-length" class="requirement">❌ At least 8 characters</div>
+                            <div id="req-uppercase" class="requirement">❌ Contains uppercase letter (A-Z)</div>
+                            <div id="req-lowercase" class="requirement">❌ Contains lowercase letter (a-z)</div>
+                            <div id="req-number" class="requirement">❌ Contains number (0-9)</div>
+                            <div id="req-special" class="requirement">❌ Contains special character (!@#$%^&amp;*)</div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Confirm Password *</label>
+                        <input type="password" id="register-confirm-password" class="form-control" placeholder="Confirm your password" required>
+                        <small style="color: var(--color-text-secondary); font-size: var(--font-size-xs);">* Required: Must match password</small>
+                    </div>
+                    <button type="submit" class="btn btn--primary btn--full-width" id="register-submit" disabled style="background-color: var(--color-gray-300); cursor: not-allowed; opacity: 0.6;">Create Account</button>
+                </form>
+                <div style="text-align: center; margin-top: 20px;">
+                    <p style="color: var(--color-text-secondary); font-size: var(--font-size-sm); margin-bottom: 8px;">Already have an account?</p>
+                    <button type="button" id="show-login" class="btn btn--outline">Back to Login</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Buy Stock Modal -->
+    <div id="buy-stock-modal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title" id="buy-modal-title">Buy Stock</h2>
+                <button class="modal-close" id="buy-stock-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div id="buy-stock-info" style="margin-bottom: 20px; padding: 16px; background: var(--color-bg-1); border-radius: var(--radius-base);">
+                    <div style="font-weight: var(--font-weight-semibold); margin-bottom: 4px;" id="buy-stock-name">Apple Inc.</div>
+                    <div style="color: var(--color-text-secondary); font-size: var(--font-size-sm);" id="buy-stock-symbol">AAPL</div>
+                    <div style="font-size: var(--font-size-lg); font-weight: var(--font-weight-bold); margin-top: 8px;" id="buy-current-price">$175.50</div>
+                </div>
+                <div style="margin-bottom: 24px; padding: 16px; background: var(--color-bg-1); border-radius: var(--radius-base); border-left: 4px solid var(--color-primary);">
+                    <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+                        <div>
+                            <div style="font-size: var(--font-size-2xl); font-weight: var(--font-weight-bold); margin-bottom: 4px;" id="buy-stock-symbol-large">AAPL</div>
+                            <div style="color: var(--color-text-secondary); margin-bottom: 8px;" id="buy-stock-company-name">Apple Inc.</div>
+                        </div>
+                        <div style="text-align: right;">
+                            <div style="font-size: var(--font-size-sm); color: var(--color-text-secondary); margin-bottom: 4px;">Current Market Price</div>
+                            <div style="font-size: var(--font-size-2xl); font-weight: var(--font-weight-bold);" id="buy-current-market-price">$175.50</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <form id="buy-stock-form">
+                    <div class="form-group">
+                        <label class="form-label">Purchase Price 🔒</label>
+                        <div style="position: relative;">
+                            <input type="number" id="buy-price" class="form-control" step="0.01" min="0.01" required readonly disabled style="background-color: var(--color-gray-200); cursor: not-allowed; opacity: 0.8; color: var(--color-text-secondary); font-weight: var(--font-weight-medium);">
+                            <div style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); color: var(--color-text-secondary); font-size: var(--font-size-sm);">🔒</div>
+                        </div>
+                        <small style="color: var(--color-text-secondary); font-size: var(--font-size-xs); margin-top: 4px; display: block;">💡 Price is locked at current market value</small>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Number of Shares *</label>
+                        <input type="number" id="buy-shares" class="form-control" placeholder="Enter number of shares" min="1" step="1" required>
+                        <small style="color: var(--color-text-secondary); font-size: var(--font-size-xs); margin-top: 4px; display: block;">* Enter the number of shares you want to purchase</small>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Purchase Date 📅</label>
+                        <div style="position: relative;">
+                            <input type="text" id="buy-date-display" class="form-control" required readonly disabled style="background-color: var(--color-gray-200); cursor: not-allowed; opacity: 0.8; color: var(--color-text-secondary); font-weight: var(--font-weight-medium);">
+                            <input type="date" id="buy-date" class="form-control" required style="display: none;">
+                            <div style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); color: var(--color-text-secondary); font-size: var(--font-size-sm);">📅</div>
+                        </div>
+                        <small style="color: var(--color-text-secondary); font-size: var(--font-size-xs); margin-top: 4px; display: block;">💡 Date automatically set to today</small>
+                    </div>
+                    
+                    <div id="total-cost-display" style="margin: 20px 0; padding: 20px; background: var(--color-bg-3); border-radius: var(--radius-base); border: 2px solid rgba(var(--color-success-rgb), 0.3);">
+                        <div style="font-size: var(--font-size-sm); color: var(--color-text-secondary); margin-bottom: 8px;">Total Cost</div>
+                        <div style="font-size: var(--font-size-3xl); font-weight: var(--font-weight-bold); color: var(--color-success); margin-bottom: 8px;">
+                            <span id="total-cost-amount">$0.00</span>
+                        </div>
+                        <div style="font-size: var(--font-size-sm); color: var(--color-text-secondary);">
+                            <span id="total-calculation">0 shares × $0.00</span>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn--secondary" id="cancel-buy-stock">Cancel</button>
+                <button type="submit" form="buy-stock-form" class="btn btn--primary" id="confirm-purchase" disabled>Confirm Purchase</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sell Stock Modal -->
+    <div id="sell-stock-modal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Sell Stock</h2>
+                <button class="modal-close" id="sell-stock-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div style="margin-bottom: 20px; padding: 16px; background: var(--color-bg-1); border-radius: var(--radius-base); border-left: 4px solid var(--color-primary);">
+                    <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px;">
+                        <div>
+                            <div style="font-size: var(--font-size-2xl); font-weight: var(--font-weight-bold); margin-bottom: 4px;" id="sell-stock-symbol-large">TSLA</div>
+                            <div style="color: var(--color-text-secondary); margin-bottom: 8px;" id="sell-stock-company-name">Tesla Inc.</div>
+                        </div>
+                        <div style="text-align: right;">
+                            <div style="font-size: var(--font-size-sm); color: var(--color-text-secondary); margin-bottom: 4px;">Current Price</div>
+                            <div style="font-size: var(--font-size-2xl); font-weight: var(--font-weight-bold);" id="sell-current-market-price">$245.60</div>
+                            <div id="sell-price-change" style="font-size: var(--font-size-sm); margin-top: 4px;">▼ -1.29%</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div style="margin-bottom: 24px; padding: 16px; background: var(--color-bg-2); border-radius: var(--radius-base); border: 1px solid rgba(var(--color-warning-rgb), 0.3);">
+                    <h4 style="margin: 0 0 12px 0; font-size: var(--font-size-base); font-weight: var(--font-weight-semibold);">Your Holdings</h4>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; font-size: var(--font-size-sm);">
+                        <div>
+                            <div style="color: var(--color-text-secondary); margin-bottom: 4px;">Total Shares</div>
+                            <div style="font-weight: var(--font-weight-semibold); font-size: var(--font-size-lg);" id="sell-total-shares">30</div>
+                        </div>
+                        <div>
+                            <div style="color: var(--color-text-secondary); margin-bottom: 4px;">Average Cost</div>
+                            <div style="font-weight: var(--font-weight-semibold); font-size: var(--font-size-lg);" id="sell-avg-cost">$255.00</div>
+                        </div>
+                        <div>
+                            <div style="color: var(--color-text-secondary); margin-bottom: 4px;">Current Value</div>
+                            <div style="font-weight: var(--font-weight-semibold); font-size: var(--font-size-lg);" id="sell-current-value">$7,368.00</div>
+                        </div>
+                        <div>
+                            <div style="color: var(--color-text-secondary); margin-bottom: 4px;">Total Gain/Loss</div>
+                            <div style="font-weight: var(--font-weight-semibold); font-size: var(--font-size-lg);" id="sell-total-gain-loss">-$282.00 (-3.7%)</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <form id="sell-stock-form">
+                    <div class="form-group">
+                        <label class="form-label">Sell Price (Current Market) 🔒</label>
+                        <div style="position: relative;">
+                            <input type="number" id="sell-price" class="form-control" step="0.01" min="0.01" required readonly disabled style="background-color: var(--color-gray-200); cursor: not-allowed; opacity: 0.8; color: var(--color-text-secondary); font-weight: var(--font-weight-medium);">
+                            <div style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); color: var(--color-text-secondary); font-size: var(--font-size-sm);">🔒</div>
+                        </div>
+                        <small style="color: var(--color-text-secondary); font-size: var(--font-size-xs); margin-top: 4px; display: block;">💡 Price locked at current market value</small>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Number of Shares to Sell *</label>
+                        <div style="display: flex; gap: 8px;">
+                            <input type="number" id="sell-shares" class="form-control" placeholder="Enter shares" min="1" step="1" required style="flex: 1;">
+                            <button type="button" id="sell-all-btn" class="btn btn--secondary" style="white-space: nowrap;">Sell All</button>
+                        </div>
+                        <small style="color: var(--color-text-secondary); font-size: var(--font-size-xs); margin-top: 4px; display: block;">Max: <span id="sell-max-shares">30</span> shares available</small>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Sale Date 📅</label>
+                        <div style="position: relative;">
+                            <input type="text" id="sell-date-display" class="form-control" required readonly disabled style="background-color: var(--color-gray-200); cursor: not-allowed; opacity: 0.8; color: var(--color-text-secondary); font-weight: var(--font-weight-medium);">
+                            <input type="date" id="sell-date" class="form-control" required style="display: none;">
+                            <div style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); color: var(--color-text-secondary); font-size: var(--font-size-sm);">📅</div>
+                        </div>
+                        <small style="color: var(--color-text-secondary); font-size: var(--font-size-xs); margin-top: 4px; display: block;">💡 Date automatically set to today</small>
+                    </div>
+                    
+                    <div style="margin: 20px 0; padding: 20px; background: var(--color-bg-4); border-radius: var(--radius-base); border: 2px solid rgba(var(--color-error-rgb), 0.3);">
+                        <h4 style="margin: 0 0 12px 0; font-size: var(--font-size-base); font-weight: var(--font-weight-semibold);">Sale Summary</h4>
+                        <div style="display: grid; gap: 8px; font-size: var(--font-size-sm); margin-bottom: 12px;">
+                            <div style="display: flex; justify-content: space-between;">
+                                <span style="color: var(--color-text-secondary);">Shares to sell:</span>
+                                <span style="font-weight: var(--font-weight-medium);" id="summary-shares">0</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between;">
+                                <span style="color: var(--color-text-secondary);">Sale price:</span>
+                                <span style="font-weight: var(--font-weight-medium);" id="summary-price-calc">$0.00 × 0</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; padding-top: 8px; border-top: 1px solid var(--color-border);">
+                                <span style="font-weight: var(--font-weight-semibold);">Total proceeds:</span>
+                                <span style="font-weight: var(--font-weight-bold); font-size: var(--font-size-lg); color: var(--color-success);" id="summary-proceeds">$0.00</span>
+                            </div>
+                        </div>
+                        <div style="display: grid; gap: 8px; font-size: var(--font-size-sm); margin-bottom: 12px; padding-top: 12px; border-top: 1px solid var(--color-border);">
+                            <div style="display: flex; justify-content: space-between;">
+                                <span style="color: var(--color-text-secondary);">Original cost:</span>
+                                <span style="font-weight: var(--font-weight-medium);" id="summary-cost-calc">$0.00 × 0</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between;">
+                                <span style="font-weight: var(--font-weight-semibold);">Total cost:</span>
+                                <span style="font-weight: var(--font-weight-medium);" id="summary-cost">$0.00</span>
+                            </div>
+                        </div>
+                        <div style="padding: 12px; background: var(--color-surface); border-radius: var(--radius-base); border: 1px solid var(--color-border);">
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <span style="font-weight: var(--font-weight-semibold);">Realized Gain/Loss:</span>
+                                <span style="font-weight: var(--font-weight-bold); font-size: var(--font-size-xl);" id="summary-gain-loss">$0.00 (0.00%)</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div id="remaining-after-sale" style="margin: 20px 0; padding: 16px; background: var(--color-bg-3); border-radius: var(--radius-base); border: 1px solid rgba(var(--color-success-rgb), 0.3); display: none;">
+                        <h4 style="margin: 0 0 8px 0; font-size: var(--font-size-base); font-weight: var(--font-weight-semibold);">Remaining After Sale</h4>
+                        <div style="font-size: var(--font-size-sm);">
+                            <span style="color: var(--color-text-secondary);">Shares: </span>
+                            <span style="font-weight: var(--font-weight-medium);" id="remaining-shares">0</span>
+                            <span style="color: var(--color-text-secondary);"> @ avg cost </span>
+                            <span style="font-weight: var(--font-weight-medium);" id="remaining-avg-cost">$0.00</span>
+                        </div>
+                        <div style="font-size: var(--font-size-sm); margin-top: 4px;">
+                            <span style="color: var(--color-text-secondary);">Value: </span>
+                            <span style="font-weight: var(--font-weight-medium);" id="remaining-value">$0.00</span>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn--secondary" id="cancel-sell-stock">Cancel</button>
+                <button type="submit" form="sell-stock-form" class="btn" id="confirm-sale" disabled style="background: #DC2626; color: white;">Confirm Sale</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Stock Modal -->
+    <div id="add-stock-modal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Add Stock to Portfolio</h2>
+                <button class="modal-close" id="add-stock-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="add-stock-form">
+                    <div class="form-group">
+                        <label class="form-label">Select Stock</label>
+                        <div style="position: relative;">
+                            <input type="text" id="stock-search" class="form-control" placeholder="Search for a stock (e.g., Apple, AAPL)" autocomplete="off">
+                            <div id="stock-dropdown" class="hidden" style="position: absolute; top: 100%; left: 0; right: 0; background: var(--color-surface); border: 1px solid var(--color-border); border-top: none; border-radius: 0 0 var(--radius-base) var(--radius-base); max-height: 200px; overflow-y: auto; z-index: 1001; box-shadow: var(--shadow-lg);">
+                                <!-- Stock options will be populated here -->
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div id="selected-stock-info" class="hidden" style="margin: 16px 0; padding: 16px; background: var(--color-bg-1); border-radius: var(--radius-base); border: 1px solid var(--color-border);">
+                        <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                            <div>
+                                <div id="selected-symbol" style="font-weight: var(--font-weight-semibold); font-size: var(--font-size-lg); margin-bottom: 4px;"></div>
+                                <div id="selected-name" style="color: var(--color-text-secondary); font-size: var(--font-size-sm);"></div>
+                            </div>
+                            <div style="text-align: right;">
+                                <div style="font-size: var(--font-size-sm); color: var(--color-text-secondary); margin-bottom: 4px;">Current Price</div>
+                                <div id="selected-price" style="font-size: var(--font-size-xl); font-weight: var(--font-weight-bold); color: var(--color-primary);"></div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Number of Shares</label>
+                        <input type="number" id="add-shares" class="form-control" placeholder="e.g., 10" min="1" step="1" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Purchase Price 🔒</label>
+                        <div style="position: relative;">
+                            <input type="number" id="add-price" class="form-control" step="0.01" min="0.01" required readonly disabled style="background-color: var(--color-gray-200); cursor: not-allowed; opacity: 0.8; color: var(--color-text-secondary); font-weight: var(--font-weight-medium);">
+                            <div style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); color: var(--color-text-secondary); font-size: var(--font-size-sm);">🔒</div>
+                        </div>
+                        <small style="color: var(--color-text-secondary); font-size: var(--font-size-xs); margin-top: 4px; display: block;">💡 Price is locked at current market value</small>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Purchase Date 📅</label>
+                        <div style="position: relative;">
+                            <input type="text" id="add-date-display" class="form-control" required readonly disabled style="background-color: var(--color-gray-200); cursor: not-allowed; opacity: 0.8; color: var(--color-text-secondary); font-weight: var(--font-weight-medium);">
+                            <input type="date" id="add-date" class="form-control" required style="display: none;">
+                            <div style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); color: var(--color-text-secondary); font-size: var(--font-size-sm);">📅</div>
+                        </div>
+                        <small style="color: var(--color-text-secondary); font-size: var(--font-size-xs); margin-top: 4px; display: block;">💡 Date automatically set to today</small>
+                    </div>
+                    
+                    <div id="add-total-cost-display" class="hidden" style="margin: 20px 0; padding: 16px; background: var(--color-bg-3); border-radius: var(--radius-base); border: 1px solid rgba(var(--color-success-rgb), 0.2);">
+                        <div style="font-size: var(--font-size-sm); color: var(--color-text-secondary); margin-bottom: 4px;">Total Cost</div>
+                        <div style="font-size: var(--font-size-xl); font-weight: var(--font-weight-bold); color: var(--color-success);">
+                            <span id="add-total-amount">$0.00</span>
+                            <div style="font-size: var(--font-size-sm); font-weight: var(--font-weight-normal); color: var(--color-text-secondary); margin-top: 4px;">
+                                <span id="add-calculation">0 shares × $0.00</span>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn--secondary" id="cancel-add-stock">Cancel</button>
+                <button type="submit" form="add-stock-form" class="btn btn--primary" id="confirm-add-stock" disabled>Add to Portfolio</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container">
+            <!-- Mobile hamburger button -->
+            <button class="hamburger-btn" id="hamburgerBtn" aria-label="Toggle menu">
+                <span class="hamburger-icon">☰</span>
+                <span class="close-icon hidden">✕</span>
+            </button>
+            
+            <a href="#" class="navbar-brand">StockTracker Pro</a>
+            <ul class="navbar-nav desktop-nav">
+                <li><a href="#" class="nav-link active" data-page="dashboard">Dashboard</a></li>
+                <li><a href="#" class="nav-link" data-page="markets">Markets</a></li>
+                <li><a href="#" class="nav-link" data-page="portfolio">Portfolio</a></li>
+                <li><a href="#" class="nav-link" data-page="watchlist">Watchlist</a></li>
+                <li><a href="#" class="nav-link" data-page="news">News</a></li>
+            </ul>
+            <div class="search-container desktop-search">
+                <svg class="search-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                </svg>
+                <input type="text" class="search-input" placeholder="Search stocks..." id="search-input">
+                <div class="search-results hidden" id="search-results"></div>
+            </div>
+            <div class="navbar-actions">
+                <button class="theme-toggle" id="theme-toggle" title="Toggle theme">
+                    <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path>
+                    </svg>
+                </button>
+                <div class="user-menu" id="user-menu-container">
+                    <div style="display: flex; align-items: center; gap: 12px;">
+                        <div id="user-welcome" class="hidden" style="color: var(--color-text-secondary); font-size: var(--font-size-sm);">Welcome, <span id="user-name">User</span></div>
+                        <div class="user-avatar" id="user-avatar">?</div>
+                        <button class="btn btn--sm btn--secondary" id="logout-btn" style="display: none;">Logout</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Mobile menu (hidden by default) -->
+            <div class="mobile-menu" id="mobileMenu">
+                <!-- Search bar in mobile menu -->
+                <div class="mobile-search-container">
+                    <svg class="search-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                    </svg>
+                    <input type="text" class="search-input mobile-search-input" placeholder="Search stocks..." id="mobile-search-input">
+                    <div class="search-results hidden" id="mobile-search-results"></div>
+                </div>
+                
+                <!-- Menu items -->
+                <a href="#" class="mobile-nav-link" data-page="dashboard">Dashboard</a>
+                <a href="#" class="mobile-nav-link" data-page="markets">Markets</a>
+                <a href="#" class="mobile-nav-link" data-page="portfolio">Portfolio</a>
+                <a href="#" class="mobile-nav-link" data-page="watchlist">Watchlist</a>
+                <a href="#" class="mobile-nav-link" data-page="news">News</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Dashboard Page -->
+        <div id="dashboard-page" class="page">
+            <!-- Live Indicator -->
+            <div class="live-indicator" style="margin-bottom: 24px;">
+                <div class="live-dot"></div>
+                <span>Live Market Data</span>
+            </div>
+
+            <!-- Market Overview -->
+            <section class="section">
+                <div class="section-header">
+                    <h2 class="section-title">Market Overview</h2>
+                    <p class="section-subtitle">Major market indices performance</p>
+                </div>
+                <div class="indices-grid" id="indices-grid">
+                    <!-- Indices will be populated here -->
+                </div>
+            </section>
+
+            <!-- Trending Stocks -->
+            <section class="section">
+                <div class="section-header">
+                    <h2 class="section-title">Market Movers</h2>
+                    <p class="section-subtitle">Top performing stocks today</p>
+                </div>
+                <div class="trending-grid">
+                    <div class="trending-card">
+                        <h3 class="trending-title">Top Gainers</h3>
+                        <div class="stock-list" id="gainers-list">
+                            <!-- Top gainers will be populated here -->
+                        </div>
+                    </div>
+                    <div class="trending-card">
+                        <h3 class="trending-title">Top Losers</h3>
+                        <div class="stock-list" id="losers-list">
+                            <!-- Top losers will be populated here -->
+                        </div>
+                    </div>
+                    <div class="trending-card">
+                        <h3 class="trending-title">Most Active</h3>
+                        <div class="stock-list" id="active-list">
+                            <!-- Most active will be populated here -->
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Featured Stocks -->
+            <section class="section">
+                <div class="section-header">
+                    <h2 class="section-title">Featured Stocks</h2>
+                    <p class="section-subtitle">Popular stocks with price charts</p>
+                </div>
+                <div class="featured-stocks" id="featured-stocks">
+                    <!-- Featured stocks will be populated here -->
+                </div>
+            </section>
+        </div>
+
+        <!-- Stock Detail Page -->
+        <div id="stock-detail-page" class="page hidden">
+            <div class="stock-detail">
+                <div class="stock-header">
+                    <div class="stock-title">
+                        <h1 class="stock-company" id="detail-company">Apple Inc.</h1>
+                        <span class="stock-symbol-large" id="detail-symbol">AAPL</span>
+                        <div class="stock-price-large" id="detail-price">$175.50</div>
+                        <div class="stock-change" id="detail-change">+$2.35 (+1.36%)</div>
+                    </div>
+                    <div class="stock-actions">
+                        <button class="heart-button" id="watchlist-btn" title="Add to Watchlist">
+                            <svg class="heart-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+                            </svg>
+                            Watchlist
+                        </button>
+                        <button class="btn btn--primary" id="buy-btn">Buy Stock</button>
+                    </div>
+                </div>
+                
+                <div class="stock-content">
+                    <div class="chart-section">
+                        <div class="chart-controls">
+                            <button class="time-button active" data-period="1D">1D</button>
+                            <button class="time-button" data-period="1W">1W</button>
+                            <button class="time-button" data-period="1M">1M</button>
+                            <button class="time-button" data-period="3M">3M</button>
+                            <button class="time-button" data-period="1Y">1Y</button>
+                            <button class="time-button" data-period="5Y">5Y</button>
+                        </div>
+                        <div class="main-chart">
+                            <canvas id="detail-chart"></canvas>
+                        </div>
+                    </div>
+                    
+                    <div class="stock-sidebar">
+                        <div class="stats-card">
+                            <h3 class="stats-title">Key Statistics</h3>
+                            <div class="stats-grid" id="stock-stats">
+                                <!-- Stats will be populated here -->
+                            </div>
+                        </div>
+                        
+                        <div class="stats-card">
+                            <h3 class="stats-title">Company Info</h3>
+                            <div class="stats-grid" id="company-info">
+                                <!-- Company info will be populated here -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Portfolio Page -->
+        <div id="portfolio-page" class="page hidden">
+            <div class="section-header">
+                <h2 class="section-title">My Portfolio</h2>
+                <p class="section-subtitle">Track your stock holdings and performance</p>
+            </div>
+            
+            <div class="portfolio-summary" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 32px;">
+                <div class="card">
+                    <div class="card__body">
+                        <h4>Total Value</h4>
+                        <div id="portfolio-value" style="font-size: 24px; font-weight: bold; color: var(--color-primary);">$0.00</div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card__body">
+                        <h4>Total Gain/Loss</h4>
+                        <div id="portfolio-change" style="font-size: 24px; font-weight: bold;">$0.00 (0.00%)</div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card__body">
+                        <h4>Holdings</h4>
+                        <div id="portfolio-count" style="font-size: 24px; font-weight: bold; color: var(--color-info);">0</div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card__body" style="display: flex; align-items: center; justify-content: center;">
+                        <button class="btn btn--primary" id="add-stock-btn">Add Stock</button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card__body">
+                    <h3 style="margin-bottom: 16px;">Holdings</h3>
+                    <div style="overflow-x: auto;">
+                        <table id="portfolio-table" style="width: 100%; border-collapse: collapse;">
+                            <thead>
+                                <tr style="border-bottom: 1px solid var(--color-card-border);">
+                                    <th style="text-align: left; padding: 12px; font-weight: 600;">Symbol</th>
+                                    <th style="text-align: left; padding: 12px; font-weight: 600;">Name</th>
+                                    <th style="text-align: right; padding: 12px; font-weight: 600;">Shares</th>
+                                    <th style="text-align: right; padding: 12px; font-weight: 600;">Avg Cost</th>
+                                    <th style="text-align: right; padding: 12px; font-weight: 600;">Current</th>
+                                    <th style="text-align: right; padding: 12px; font-weight: 600;">Market Value</th>
+                                    <th style="text-align: right; padding: 12px; font-weight: 600;">Gain/Loss</th>
+                                    <th style="text-align: center; padding: 12px; font-weight: 600;">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="portfolio-tbody">
+                                <!-- Portfolio holdings will be populated here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Watchlist Page -->
+        <div id="watchlist-page" class="page hidden">
+            <div class="section-header">
+                <h2 class="section-title">My Watchlist</h2>
+                <p class="section-subtitle">Keep track of stocks you're interested in</p>
+            </div>
+            
+            <div class="card" style="margin-bottom: 24px;">
+                <div class="card__body">
+                    <div style="display: flex; gap: 12px; align-items: center;">
+                        <input type="text" id="watchlist-search" class="form-control" placeholder="Enter stock symbol (e.g., AAPL)" style="flex: 1;">
+                        <button class="btn btn--primary" id="add-watchlist-btn">Add to Watchlist</button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="watchlist-grid" id="watchlist-grid" style="display: grid; gap: 16px;">
+                <!-- Watchlist items will be populated here -->
+            </div>
+        </div>
+
+        <!-- Markets Page -->
+        <div id="markets-page" class="page hidden">
+            <div class="section-header">
+                <h2 class="section-title">Markets</h2>
+                <p class="section-subtitle">Global market overview and sector performance</p>
+            </div>
+            
+            <section class="section">
+                <h3>Global Indices</h3>
+                <div class="indices-grid" id="global-indices">
+                    <!-- Global indices will be populated here -->
+                </div>
+            </section>
+            
+            <section class="section">
+                <h3>Market Movers</h3>
+                <div class="trending-grid">
+                    <div class="trending-card">
+                        <h4 class="trending-title">Biggest Gainers</h4>
+                        <div class="stock-list" id="market-gainers">
+                            <!-- Market gainers will be populated here -->
+                        </div>
+                    </div>
+                    <div class="trending-card">
+                        <h4 class="trending-title">Biggest Losers</h4>
+                        <div class="stock-list" id="market-losers">
+                            <!-- Market losers will be populated here -->
+                        </div>
+                    </div>
+                    <div class="trending-card">
+                        <h4 class="trending-title">High Volume</h4>
+                        <div class="stock-list" id="market-volume">
+                            <!-- High volume will be populated here -->
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- News Page -->
+        <div id="news-page" class="page hidden">
+            <div class="section-header">
+                <h2 class="section-title">Market News</h2>
+                <p class="section-subtitle">Latest financial news and market updates</p>
+            </div>
+            
+            <div class="news-grid" id="news-grid" style="display: grid; gap: 24px;">
+                <!-- News items will be populated here -->
+            </div>
+        </div>
+    </main>
+
+    <script src="app.js"></script>
+</body>
+</html>
